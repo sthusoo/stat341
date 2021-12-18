@@ -1,0 +1,14 @@
+---
+title: "Assignment 1 Question 2"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## a. Load the data and output the number of rows and columns.
+
+```{r}
+iris_data <- read.csv("Iris.csv")
+iris_data.rows <- nrow(iris_data)
+iris_data.cols <- ncol(iris_data)
+message("The dataset has ", iris_data.rows, " rows and ", iris_data.cols, " columns.")
+```

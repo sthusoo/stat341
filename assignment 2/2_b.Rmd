@@ -1,0 +1,38 @@
+---
+title: "Assignment 2 Question 2"
+output: pdf_document
+author: Sheen Thusoo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part b)
+
+``` {r}
+data <- read.csv("EconomicMobility.csv")
+```
+
+
+``` {r}
+createLogLikeFunction <- function(P) {
+  function(alpha, beta) {
+    loglikelihood <- 0
+    for (y in P) {
+      loglikelihood <- loglikelihood + alpha*log(beta) + 
+        (alpha -1)*log(y) - log(gamma(alpha)) - y*beta
+    }
+    return(loglikelihood)
+  }
+}
+```
+
+
+``` {r}
+alpha <- 2
+beta <- 2
+log.func <- createLogLikeFunction(data$Commute)
+result <- log.func(alpha, beta)
+result
+```

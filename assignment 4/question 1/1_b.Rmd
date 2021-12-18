@@ -1,0 +1,54 @@
+---
+title: "Assignment 4 Question 1 b)"
+author: "Sheen Thusoo"
+date: "30/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## For each sample calculate the variance and the IQR. Then construct two histograms (in a single row) of the sample error for each attribute.
+
+``` {r}
+data <- read.csv('EconomicMobility.csv')
+```
+
+``` {r}
+VarIQR <- function(pop, N) {
+  variance <- var(pop) * (N-1)/N
+  iqr <- IQR(pop)
+  c(variance, iqr)
+}
+
+N <- length(data[,1])
+result <- VarIQR(data$Mobility, N)
+```
+
+``` {r}
+SRSWOR <- function(pop, sampSize) {
+  sample(pop, sampSize, replace = FALSE)
+}
+
+M <- 1000
+n <- 100
+
+samples <- sapply(1:M, function(i) SRSWOR(data$Mobility, n))
+sample_attributes <- apply(samples, MARGIN=2, FUN=function(s) {
+  VarIQR(s, length(s))
+})
+```
+
+```{r}
+samp_error_var <- apply(sample_attributes, MARGIN=2, FUN=function(s) {
+  s[1] - result[1]
+})
+samp_error_iqr <- apply(sample_attributes, MARGIN=2, FUN=function(s) {
+  s[2] - result[2]
+})
+
+par(mfrow=c(1,2))
+hist(samp_error_var, ylim=c(0,350), main="Sample Error for Variance", xlab="Sample Error")
+hist(samp_error_iqr, ylim=c(0,350), main="Sample Error for IQR", xlab="Sample Error")
+```

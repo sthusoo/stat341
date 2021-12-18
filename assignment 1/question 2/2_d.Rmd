@@ -1,0 +1,18 @@
+---
+title: "Assignment 1 Question 2"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## d. Using R, calculate and report the average sepal length for each species of the iris flower.
+
+
+``` {r}
+library(knitr)
+iris_data <- read.csv("Iris.csv")
+species.SepalLength.means <- aggregate(x = iris_data$SepalLength,
+          by = list(iris_data$Species),
+          FUN = mean)
+
+kable(species.SepalLength.means, col.names = c("Species", "Average Sepal Length (cm)"))
+```

@@ -1,0 +1,46 @@
+---
+title: "Question 2 b)"
+author: "Sheen Thusoo"
+date: "14/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Determine the inclusion probabilities and join inclusion probabilities for WSRSWR.
+
+$w_u=N_u/N$ where $N_u$ is the population of the community and $N$ is the population of the country.
+
+Inclusion Probability:
+$$
+\pi_u = P(u \in s) = 1 - P(u \notin s)
+$$
+
+
+$$
+\pi_u = 1 - (1 - w_u)^n
+$$
+
+
+Joint Inclusion Probability:
+$$
+\pi_{uv} = P(u \in s \text{  } \& \text{  } v \in s)
+$$
+
+
+$$
+\pi_{uv} = \left[1 - P(u \notin s)\right]\left[1 - P(v \notin s)\right]
+$$
+
+
+$$
+\pi_{uv} = 1 - P(v \notin s) - P(u \notin s) + P(u \notin s \, \, \& \, \, v \notin s)
+$$
+
+
+
+$$
+\pi_{uv} = 1 - (1- w_u)^n - (1- w_v)^n + (1- w_u - w_v)^n
+$$

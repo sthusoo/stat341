@@ -1,0 +1,127 @@
+---
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#### Question 3: Were the sales affected by COVID-19 pandemic policies in Italy, Greece, Bulgaria, Hungary, Romania, Poland, and Russia?
+
+``` {r, echo=FALSE}
+data <- read.csv("WBCOVID_data.csv")
+data <- data[!is.na(data$COVb2a),]
+```
+
+``` {r, echo=FALSE}
+italy <- data[data$Country == "Italy", ]
+greece <- data[data$Country == "Greece", ]
+poland <- data[data$Country == "Poland", ]
+russia <- data[data$Country == "Russian Federation", ]
+bulgaria <- data[data$Country == "Bulgaria", ]
+hungary <- data[data$Country == "Hungary", ]
+romania <- data[data$Country == "Romania", ]
+```
+
+```{r, echo=FALSE}
+# get proportion of of businesses whose sale increased or decreased
+getProp <- function(country) {
+  prop.changed <- round(length(which(country$COVb2a == 1 | country$COVb2a == 3)) / nrow(country), 3)
+  prop.increase <- round(length(which(country$COVb2a == 1)) / nrow(country), 3)
+  prop.decrease <- round(length(which(country$COVb2a == 3)) / nrow(country), 3)
+  prop.same <- round(length(which(country$COVb2a == 2)) / nrow(country), 3)
+  return( c(prop.changed, prop.increase, prop.decrease, prop.same) )
+}
+
+Italy <- getProp(italy)
+
+Greece <- getProp(greece)
+
+Bulgaria <- getProp(bulgaria)
+
+Hungary <- getProp(hungary)
+
+Romania <- getProp(romania)
+
+Poland <- getProp(poland)
+
+Russia <- getProp(russia)
+
+Affect = c("Sales Changed", "Sales Increase", "Sales Decrease", "Sales Remained Same")
+
+sales.affected <- data.frame(Affect, Italy, Greece, Bulgaria, Hungary, Romania, Poland, Russia)
+knitr::kable(sales.affected, "pipe")
+```
+Therefore, of the businesses in the dataset, all of the countries, Italy, Greece, Bulgaria, Hungary, Romania, Poland, Russia, had more than 50% of their businesses experience a decrease in sales. Italy had the most businesses whose sales decrease with 73.5% and Hungary had the lowest percentage of businesses whose sales decreased with 50.4%. Very few businesses had their sales increase in all countries, with the Greece having the largest proportion of businesses whose sales increase (17%). Some businesses in the countries had their sales remain the same. However, it can be concluded that the sales were affected by COVID-19 policies in all countries.
+
+#### If the sales were affected, has the effect been similar or different between countries?  
+$H_0$: The sub-populations $\mathcal{P}_1$ (country 1) and $\mathcal{P}_2$ (country 2) were randomly drawn from the same population.  
+I hypothesized that the averages from the two sub-populations are the same, so:
+$$ D(\mathcal{P}_1, \mathcal{P}_2) = |\bar{y_1} - \bar{y_2}|$$  
+
+The sub-populations were randomly mixed 5000 times and the discrepancy measure was calculated on each mixed population (shown in histogram). The red line represents the discrepancy measure calculated on the unmixed population.  
+**First country pair: Italy-Greece**
+``` {r, echo=FALSE}
+set.seed(341)
+significanceTest <- function(pop1, pop2, xlim) {
+  pop <- list(pop1 = pop1, pop2 = pop2)
+  diffAveLengths <- getAveDiffsFn("COVb2c")
+  
+  mixedPop <- mixRandomly(pop)
+  diffLengths <- sapply(1:5000, FUN = function(...) {
+    diffAveLengths(mixRandomly(pop))
+  })
+  
+  hist(diffLengths, breaks = "FD", xlim=xlim, main = paste(pop1$Country[1], "and", pop2$Country[1], "- Randomly Mixed Populations"), xlab = "Absolute Difference in Averages", 
+    col = "lightgrey")
+
+  abline(v = diffAveLengths(pop), col = "red", lwd = 2)
+  p.val <- sum(abs(diffLengths) >= abs(diffAveLengths(pop))) / length(diffLengths)
+  cat("The p-value is ", p.val)
+}
+
+mixRandomly <- function(pop) {
+    pop1 <- pop$pop1
+    n_pop1 <- nrow(pop1)
+    
+    pop2 <- pop$pop2
+    n_pop2 <- nrow(pop2)
+    
+    mix <- rbind(pop1, pop2)
+    select4pop1 <- sample(1:(n_pop1 + n_pop2), n_pop1, replace = FALSE)
+    
+    new_pop1 <- mix[select4pop1, ]
+    new_pop2 <- mix[-select4pop1, ]
+    list(pop1 = new_pop1, pop2 = new_pop2)
+}
+
+getAveDiffsFn <- function(variate) {
+    function(pop) {
+        abs(mean(pop$pop1[, variate]) - mean(pop$pop2[, variate]))
+    }
+}
+```
+
+```{r, echo=FALSE, fig.height=4}
+pop1 <- italy[!is.na(italy$COVb2c),]
+pop2 <- greece[!is.na(greece$COVb2c),]
+xlim = c(0, 10)
+significanceTest(pop1, pop2, xlim)
+```
+**Comments**: The p-value computed for the absolute difference in averages between the percentage the sales decreased in businesses in Italy and Greece is about 0.02. This means that there is evidence against $H_0$ which hypothesized that these sub-populations were drawn from the same population. Therefore, the effect of the policies on these two countries, given the attribute of the average percentage that sales decreased, was different.
+
+**Second country pair: Bulgaria-Russia**
+``` {r, echo=FALSE, fig.align = 'left'}
+pop1 <- bulgaria[!is.na(bulgaria$COVb2c),]
+pop2 <- russia[!is.na(russia$COVb2c),]
+xlim = c(0, 6)
+significanceTest(pop1, pop2, xlim)
+```
+**Comments**: The p-value computed for the absolute difference in averages between the percentage the sales decreased in businesses in Bulgaria and Russia is about 0.44. This means that there is no evidence against $H_0$ which hypothesized that these sub-populations were drawn from the same population. Therefore, the effect of the policies on these two countries, given the attribute of the average percentage that sales decreased, was similar.
+
+**Third country pair: Hungary-Poland**
+``` {r, echo=FALSE, fig.align = 'left'}
+pop1 <- poland[!is.na(poland$COVb2c),]
+pop2 <- hungary[!is.na(hungary$COVb2c),]
+xlim = c(0, 8)
+significanceTest(pop1, pop2, xlim)
+```
+**Comments**: The p-value computed for the absolute difference in averages between the percentage the sales decreased in businesses in Poland and Russia is about 0.046. This means that there is evidence against $H_0$ which hypothesized that these sub-populations were drawn from the same population. Therefore, the effect of the policies on these two countries, given the attribute of the average percentage that sales decreased, was different.

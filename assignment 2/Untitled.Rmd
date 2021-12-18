@@ -1,0 +1,18 @@
+---
+title: "Question 1 part a"
+output: pdf_document
+author: Sheen Thusoo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1 Part a)
+
+### a) [4 marks] Construct a 2X1 figure containing two scatter-plots. The first plot is latitude (y) vs longitude(x) in which the points are shaded/coloured by population categories below
+
+```{r}
+data <- read.csv("EconomicMobility.csv")
+
+```

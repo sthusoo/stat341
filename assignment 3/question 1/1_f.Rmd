@@ -1,0 +1,89 @@
+---
+title: "Question 1 f)"
+author: "Sheen Thusoo"
+date: "10/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r}
+data <- read.csv("Infectious.csv")
+```
+
+```{r}
+powerfun <- function(x, alpha) {
+  if(sum(x <= 0) > 1) stop("x must be positive")
+  if (alpha == 0)
+    log(x)
+  else if (alpha > 0) {
+    x^alpha
+  } else -x^alpha
+}
+```
+
+
+```{r}
+power_transformation <- function(x, y) {
+  function(alpha_x, alpha_y) {
+    power_x <- powerfun(x + 1, alpha_x)
+    power_y <- powerfun(y + 1, alpha_y)
+    new_data <- list("x" = power_x, "y" = power_y)
+  }
+}
+
+power_transformed = power_transformation(data$Infected, data$Deceased.Prop)
+data_transformed <- power_transformed(0.3, 3.2)
+```
+
+
+``` {r}
+library("ggplot2")
+library("gridExtra")
+
+ggplot(data) +
+  geom_point(
+    aes(x = data_transformed$x, 
+        y = data_transformed$y,
+        alpha = 0.5)
+  ) + 
+  labs(
+    title = "Power Transformation of Number Infected vs. Deceased Proportion",
+    x = "Power-Transformed Number Infected "~alpha[x] == 0.3~"",
+    y = "Power-Transformed Deceased Proportion "~alpha[y] == 3.2~"" 
+  )
+
+```
+
+```{r}
+dataframe = data.frame(data_transformed$x, data_transformed$y)
+fitted.model <- lm(data_transformed$y~data_transformed$x, dataframe)
+
+summary(fitted.model)
+```
+
+
+```{r}
+yhat <- fitted.model$coefficients[1] + fitted.model$coefficients[2] * data$Infected
+yhat.realigned <- yhat ^ (1/3.2) - 1
+```
+
+
+``` {r}
+ggplot(data) + 
+  geom_point(
+    aes(x = yhat.realigned, 
+        y = Deceased.Prop,
+        alpha = 0.5)
+  ) +
+  labs(
+       y="Fitted Model", 
+       x="Deceased Proportion", 
+       title="Plot of Observed Proportions - Deceased Proportion vs. Fitted Model", 
+)
+```
+
+**Comment on the fit of the model**  
+The fit of the model is linear; almost resembling a $y = x$ line. However, it is slightly curved downwards towards the right of the plot. Thus, the fitted model works well to transform the data in part b) to a linear relationship.

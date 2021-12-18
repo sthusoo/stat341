@@ -1,0 +1,92 @@
+---
+title: "Question 2 a)"
+author: "Sheen Thusoo"
+date: "12/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r}
+data <- read.csv("Infectious.csv")
+```
+
+``` {r}
+# From Tutorial 7 but modified for with replacement
+createInclusionProbFn <- function(N, sampSize) {
+  n <- sampSize
+  f <- function(u) rep( 1 - (1 - 1/N)^n, length(u))
+  return(f)
+}
+
+createJointInclusionProbFn <- function(N, sampSize) {
+  n <- sampSize
+  f <- function(u, v) ifelse(u == v, 1 - (1 - 1/N)^n, 1 - 2 * (( (N-1) /N )^n) + ( (N - 2)/N)^n)
+  return(f)
+}
+
+createHTestimator <- function(pi_u_fn) {
+  f <- function(sample_idx, variateFn) 
+    sum(sapply(sample_idx, function(u) variateFn(u)/ pi_u_fn(u)))
+  return(f)
+}
+
+createHTVarianceEstimator <- function(pi_u_fn, pi_uv_fn) {
+  f = function(sample_idx, variateFn) {
+    sum(outer(sample_idx, sample_idx, FUN = function(u, v) {
+      pi_u     <- pi_u_fn(u)
+      pi_v     <- pi_u_fn(v)
+      y_u      <- variateFn(u)
+      y_v      <- variateFn(v)
+      pi_uv    <- pi_uv_fn(u, v)
+      Delta_uv <- pi_uv - pi_u * pi_v
+      return((Delta_uv * y_u * y_v) / (pi_uv * pi_u * pi_v))
+    }))
+  }
+  return(f)
+}
+
+createGenericVariateFn <- function(popData, expression, ...) {
+  # Save extra arguments to extra_args
+  extra_args <- list(...)
+  # A formality; instead of evaluating, return the unevaluated expression.
+  evalable <- substitute(expression)
+  # Evaluate expression in the context of popData, restricted to indices u, and any extra_args.
+  f <- function(u) with(extra_args, eval(evalable, popData[u,]))
+  return(f)
+}
+```
+
+
+### Provide an estimate of the total number of individuals who died in country A because of the infectious disease
+```{r}
+n = 100 # samples
+N = 486 # population
+
+inclusionProb       <- createInclusionProbFn(N, sampSize = n)
+inclusionJointProb  <- createJointInclusionProbFn(N, sampSize = n)
+
+deceasedHTestimator   <- createHTestimator(inclusionProb)
+HTVarianceEstimator <- createHTVarianceEstimator(pi_u_fn  = inclusionProb,
+                                                 pi_uv_fn = inclusionJointProb)
+
+deceased.infected <- createGenericVariateFn(data, Deceased.Prop * Infected * 12.5)
+
+estimated.deceased.infected <- deceasedHTestimator(seq(100), deceased.infected)
+cat('Estimate of total number of individuals who died in country A because 
+    of the infectious disease: ', estimated.deceased.infected)
+```
+
+### Provide the standard error of your estimate as well as a 95% confidence interval for the number of individuals who died of the infectious
+
+``` {r}
+standard.error <- sqrt(HTVarianceEstimator(seq(100), deceased.infected))
+cat('Standard Error of Estimate: ', standard.error)
+```
+
+``` {r}
+confidence.interval <- estimated.deceased.infected + 2*standard.error*c(-1,1)
+cat('95% Confidence Interval: ', confidence.interval)
+```

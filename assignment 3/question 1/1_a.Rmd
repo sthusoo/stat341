@@ -1,0 +1,19 @@
+---
+title: "Question 1 a)"
+author: "Sheen Thusoo"
+date: "10/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r}
+data <- read.csv("Infectious.csv")
+plot(data, main="Deceased Proportion vs. Number Infected ",
+   xlab="Number of infected individuals per million", ylab="Deceased Proporiton", pch=19, 
+   col=rgb(red=0.2, green=0.2, blue=1.0, alpha=0.5))
+```
+
+This data contains information about infectious diseased in 100 randomly chosen communities in country A. From the graph above, we can clearly see that as the number of infected individuals per million population increases, the proportion of people who have died due to infectious disease increases as well. Specifically, the shape of the data points is similar to that of a log function. At the beginning, the proportion of those who have died increases quickly and nearing the end of the data the proportion increasing slower reaching almost a full 1.0.

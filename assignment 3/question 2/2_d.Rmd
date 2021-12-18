@@ -1,0 +1,14 @@
+---
+title: "Question 2 d)"
+author: "Sheen Thusoo"
+date: "14/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Based on the results in (a), (b), and (c), can you decide which sampling protocol (the original one in this question vs. WSRSWR of parts b) and c) is better based? Why?
+
+Based on the results in (a), (b), and (c), the original sampling protocol, that being in part (a), is better. Looking at the results, in (a) we had a standard error of 8304.263 which is significantly less than that calculated in part (c), that being 13230.55. As well, the 95% confidence interval for the estimate in part (a) was (117529.1, 150746.1) which is narrower than the 95% confidence interval for part (b), (66252.53, 119174.7). Thus, due to it having a significantly less standard error and a narrower confidence interval, indicating that the estimate is more precise, the sampling protocol in part (a) is a better estimator of the total number of individuals who died in country A because of the infectious disease.

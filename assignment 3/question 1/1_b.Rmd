@@ -1,0 +1,53 @@
+---
+title: "Question 1 b)"
+author: "Sheen Thusoo"
+date: "10/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r}
+data <- read.csv("Infectious.csv")
+```
+
+```{r}
+objective.fn <- function(x, y) {
+  function(alpha, beta) {
+    result <- 0
+    for (i in 1:length(x)) {
+      result <- result + (y[i] - ( 1-  1/(alpha + beta * x[i])))^2
+    }
+    return(result)
+  }
+}
+```
+
+
+```{r}
+alpha = seq(0.5, 4, 0.1)
+beta = seq(0.1, 2, 0.1)
+objective <- objective.fn(data$Infected, data$Deceased.Prop)
+# This is the key computation; there are many ways to achieve this.
+z = outer(alpha, beta, objective)  # Outer takes advantage of the fact that
+                                 # objective.fn is vectorized simultaneously
+
+par(mfrow = c(1, 2), mar = c(3,3,1,1), mgp = c(3, 0.5, 0))
+persp(alpha, beta, z,                 # x-ticks, y-ticks, "height" matrix.
+      theta = -30, phi = 10,     # Viewpoint rotation (spherical coordinates).
+      col='yellow', expand=1,
+      ticktype = 'detailed')
+
+# For an interactive visualization, substitute persp for rgl::persp3d.
+
+image(alpha, beta, z,                 # Matrix as heatmap.
+      col = heat.colors(100),    # Palette with 100 levels; visually continuous.
+      useRaster = TRUE,          # Less accurate image, but faster.
+      ann = FALSE)
+mtext(text = "alpha", side = 1, line = 1.5) # Suppress default axis labels, and
+mtext(text = "beta", side = 2, line = 1.5) # draw them closer to the axis.
+contour(alpha, beta, z, add = TRUE)   # Add contours.
+```

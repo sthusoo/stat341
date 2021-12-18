@@ -1,0 +1,74 @@
+---
+title: "Assignment 1 Question 1"
+output: pdf_document
+author: Sheen Thusoo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part b)
+
+```{r}
+data <- read.csv("EconomicMobility.csv")
+```
+
+```{r}
+powerfun <- function(x, alpha) {
+  if(sum(x <= 0) > 1) stop("x must be positive")
+  if (alpha == 0)
+    log(x)
+  else if (alpha > 0) {
+    x^alpha
+  } else -x^alpha
+}
+```
+
+
+```{r}
+power_transformation <- function(x, y) {
+  function(alpha_x, alpha_y) {
+    power_x <- powerfun(x + 1, alpha_x)
+    power_y <- powerfun(y + 1, alpha_y)
+    new_data <- list("x" = power_x, "y" = power_y)
+  }
+}
+
+power_transformed = power_transformation(data$Population, data$Commute)
+data_transformed <- power_transformed(-0.5, -0.5)
+```
+
+
+
+``` {r, fig.width=10}
+library("ggplot2")
+library("gridExtra")
+plot1 <- ggplot(data) +
+  geom_point(
+    aes(x = Population, 
+        y = Commute,
+        alpha = 0.5)
+  ) + 
+  labs(
+    title = "Population vs. Commute",
+    x = "Population",
+    y = "Commute"
+  )
+
+plot2 <- ggplot(data) +
+  geom_point(
+    aes(x = data_transformed$x, 
+        y = data_transformed$y,
+        alpha = 0.5)
+  ) + 
+  labs(
+    title = "Power-Transformed Population vs. Commute",
+    x = "Power-Transformed Population "~alpha[x] == -0.5~"",
+    y = "Power-Transformed Commute "~alpha[y] == -0.5~"" 
+  )
+
+grid.arrange(plot1, plot2, nrow = 1)
+```
+
+

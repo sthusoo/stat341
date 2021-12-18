@@ -1,0 +1,124 @@
+---
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+\fontsize{10}{15}
+## Question 3: Comparison of Two Sub-Populations
+
+#### Description of the context and the Two Sub-Populations:
+The dataset used for this question was found on [Kaggle](https://www.kaggle.com/sootersaalu/amazon-top-50-bestselling-books-2009-2019/version/1) and is titled "Amazon Top 50 Bestselling Books 2009 - 2019". This dataset includes information on a population, that being the top 50 bestselling books in every year from 2009 to 2019 on the e-commerce site Amazon. Therefore, in total, there are 550 books in this population. This data has been categorized into two genres - fiction and non-fiction - using Goodreads which is a subsidiary of Amazon that has a database of books. The two sub-populations being compared in this question will be Fiction and Non-Fiction books. The dataset itself contains information about the title, author, Amazon user rating, number of reviews on Amazon, year of ranking, price, and genre (fiction or non-fiction).The two attributes used to compare these sub-populations are the population mean and the standard deviation of the user ratings.
+``` {r, echo=FALSE}
+bestselling.books <- read.csv("bestsellers_with_categories.csv")
+```
+
+Population 1 is Fiction books and Population 2 is Non Fiction. We can numerically compare the user ratings for both sub-populations:
+``` {r, echo=FALSE}
+pop <- list(pop1 = subset(bestselling.books, bestselling.books$Genre == "Fiction"), pop2 = subset(bestselling.books, bestselling.books$Genre == "Non Fiction") )
+
+# Fiction Genre Sub-Pop
+summary(pop[[1]]$User.Rating)
+```
+
+``` {r, echo=FALSE}
+# Non Fiction Genre Sub-Pop
+summary(pop[[2]]$User.Rating)
+```
+The first sub-population has a mean of 4.648 and the second population has a similar yet lower mean of 4.595. The first sub-population seems to have a larger range (4.9 - 3.3 = 1.6) than the second sub-population (4.9 - 4 - 0.9). We can also compare these sub-populations graphically using a quantile plot:
+``` {r echo=FALSE, fig.align = 'left', fig.height=4}
+par(mfrow=c(1,3))
+
+qvals <- sort(pop[[1]]$User.Rating)
+pvals <- ppoints(length(qvals))
+plot(pvals, qvals, pch=19, col = adjustcolor("black", alpha=0.5) , xlim=c(0,1), ylim=extendrange(range(bestselling.books$User.Rating)), xlab = "Proportion p", ylab = "Quantiles Q(p)",
+                                                                                                main="Fiction User Ratings")
+
+qvals <- sort(pop[[2]]$User.Rating)
+pvals <- ppoints(length(qvals))
+plot(pvals, qvals, pch=19, col = adjustcolor("red", alpha=0.5) , xlim=c(0,1), ylim=extendrange(range(bestselling.books$User.Rating)), xlab = "Proportion p", ylab = "Quantiles Q(p)",
+                                                                                                main="Non Fiction User Ratings")
+
+qvals <- sort(pop[[1]]$User.Rating)
+pvals <- ppoints(length(qvals))
+plot(pvals, qvals, pch=19, col = adjustcolor("black", alpha=0.5) , xlim=c(0,1), ylim=extendrange(range(bestselling.books$User.Rating)), xlab = "Proportion p", ylab = "Quantiles Q(p)",
+                                                                                                main="Fiction/Non Fiction User Ratings")
+qvals <- sort(pop[[2]]$User.Rating)
+pvals <- ppoints(length(qvals))
+points(pvals, qvals, pch=19, col = adjustcolor("red", alpha=0.5))
+```
+Comparing these figures, it seems as though at Q(1/2) or the median, both populations have a similar value. However, Population 1 of Fiction books have a slightly higher value. It also seems as if the 1st quantile Q(1/4) and the third quantile Q(3/4) occur at similar values at well with Population 1 having slightly higher values. Overall, the general shape of the quantile plots is very similar.
+
+```{r, echo=FALSE, fig.height = 3}
+# par(mfrow=c(1,2))
+# hist(pop[[1]]$User.Rating, xlab="User Rating", main="Population 1 (Fiction)")
+# hist(pop[[2]]$User.Rating, xlab="User Rating", main="Population 2 (Non Fiction)")
+```
+From the histograms of the original two sub-populations, which are not shown to due to spacing limits, it is seen that both of these populations are right-skewed. However, population 1 has much lower tail values towards the left than population 2.
+
+``` {r, echo=FALSE}
+mixRandomly <- function(pop) {
+  pop1 <- pop$pop1
+  n_pop1 <- nrow(pop1)
+  
+  pop2 <- pop$pop2
+  n_pop2 <- nrow(pop2)
+  
+  mix <- rbind(pop1, pop2)
+  select4pop1 <- sample(1:550, n_pop1, replace = FALSE)
+  
+  new_pop1 <- mix[select4pop1,]
+  new_pop2 <- mix[-select4pop1,]
+  
+  list(pop1 = new_pop1, pop2 = new_pop2)
+}
+
+getAveDiffsFn <- function(variate) {
+  function(pop) {
+    mean(pop$pop1[, variate]) - mean(pop$pop2[, variate])
+  }
+}
+
+getSDRatioFn <- function(variate) {
+  function(pop) {
+    sd(pop$pop1[, variate]) / sd(pop$pop2[, variate])
+  }
+}
+```
+
+```{r, echo=FALSE}
+diffAveRatings <- getAveDiffsFn("User.Rating")
+ratioSDRatings <- getSDRatioFn("User.Rating")
+```
+We can also compare these sub-populations by finding the difference of their means. This was calculated to be 0.053. They can also be compared by the ratio of their standard deviations (SDs) which was calculated to have a value of 1.399. To discern whether these values are large or small, we can randomly mix these sub-populations and calculate them again.
+```{r, echo=FALSE}
+# round( c(diffAveRatings(pop), ratioSDRatings(pop) ), 3)
+```
+These are the differences of means and ratio of SDs of the randomly mixed sub-populations.The difference of means had a value of 0.035 and the ratio of SDs had a value of 0.909.
+```{r, echo=FALSE}
+set.seed(341)
+mixedPop <- mixRandomly(pop)
+round( c(diffAveRatings(mixedPop), ratioSDRatings(mixedPop) ), 3)
+```
+From the values for the original populations, these values do not seem very different. The difference in mean has only decreased by 0.018 units and the ratio of SDs has decreased by 0.49 units. To further investigate, we can shuffle the populations in 5000 different rearrangements and calculate the difference of means and ratio of SDs for each such rearrangement. 
+
+```{r, echo=FALSE}
+set.seed(100)
+diffRatings <- sapply(1:5000, FUN = function(...) {
+  diffAveRatings(mixRandomly(pop))
+})
+
+ratioRatings <- sapply(1:5000, FUN = function(...) {
+  ratioSDRatings(mixRandomly(pop))
+})
+```
+
+``` {r, echo=FALSE, fig.height=4}
+par(mfrow=c(1,2))
+hist(diffRatings, breaks = 20, main = "Randomly Mixed Populations", xlab="Difference in Averages", col="lightgrey")
+abline(v = diffAveRatings(pop), col="red", lwd =2)
+
+hist(ratioRatings, breaks = 20, main = "Randomly Mixed Populations", xlab="Ratio of SDs", col="lightgrey")
+abline(v = ratioSDRatings(pop), col="red", lwd =2)
+```
+**Conclusion:** The red line on the left plot represents the difference between the average user rating in each of the original sub-populations. The red line on the right plot represents the ratio of the standard deviations of the user ratings in each of the original sub-populations. From the graph on the left and the right, it seems as though these value are extreme relative to the randomly mixed differences and ratios. This reflects that the sub-population features may not be similar as was previously found when just taking one rearrangement. This is why it is critical to take many different rearrangements. Thus, it can be concluded that the sub-populations observed cannot be said to be similar in terms of averages and standard deviations as swapping the units dramatically changes the features of the resulting sub-populations.

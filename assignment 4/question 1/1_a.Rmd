@@ -1,0 +1,35 @@
+---
+title: "Assignment 4 Question 1 a)"
+author: "Sheen Thusoo"
+date: "30/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Write a function named `VarIQR` that takes in a population or sample of variates and outputs the variance $\sigma^2$ and the inter-quartile range $IQR$. Apply this function to the population of `Mobility` values.
+
+``` {r}
+data <- read.csv('EconomicMobility.csv')
+```
+
+``` {r}
+VarIQR <- function(pop, N) {
+  variance <- var(pop) * (N-1)/N
+  iqr <- IQR(pop)
+  c(variance, iqr)
+}
+
+N <- length(data[,1])
+result <- VarIQR(data$Mobility, N)
+```
+
+``` {r}
+cat("Variance of Mobility: ", result[1])
+```
+
+``` {r}
+cat("IQR of Mobility: ", result[2])
+```

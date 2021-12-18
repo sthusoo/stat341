@@ -1,0 +1,19 @@
+---
+title: "Assignment 1 Question 2"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## c. Using R, determine which iris species have the largest and smallest sepal widths, respectively.
+
+```{r}
+iris_data <- read.csv("Iris.csv")
+min_sepal_width <- min(iris_data$SepalWidth)
+min_sepal_width.species <- iris_data[iris_data$SepalWidth == min_sepal_width, "Species"]
+
+max_sepal_width <- max(iris_data$SepalWidth)
+max_sepal_width.species <- iris_data[iris_data$SepalWidth == max_sepal_width, "Species"]
+
+message("The species with the smallest sepal width is ", min_sepal_width.species)
+message("The species with the largest sepal width is ", max_sepal_width.species)
+```

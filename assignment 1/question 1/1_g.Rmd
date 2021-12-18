@@ -1,0 +1,52 @@
+---
+title: "Assignment 1 Question 1"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## g. For the population below, plot the sensitivity curve from part (f) for $y \in [- 10,10]$. Make sure that you make the axes presentable, and include informative labels and titles. Based on this plot and all you have learned about the excess kurtosis in Question 1 so far, mention one good and one bad property of the excess kurtosis attribute.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r}
+set.seed(341)
+pop <- rt(1000,10)
+```
+
+First, define a function for the excess kurtosis, $\alpha \left ( \mathcal P  \right )$, attribute:
+
+``` {r}
+excess_kurtosis <- function(y.pop) {
+  N <- length(y.pop)
+  (((1/N) * sum((y.pop - mean(y.pop))^4)) /  ((1/N) * sum((y.pop - mean(y.pop))^2))^2) - 3
+}
+```
+
+Next, define a function for Sensitivity Curve:
+
+``` {r}
+sc = function(y.pop, y, attr, ...) {
+  N <- length(y.pop) +1
+  sapply( y, function(y.new) {  N*(attr(c(y.new, y.pop),...) - attr(y.pop,...))  } )
+}
+```
+
+Plot the Sensitivity Curve:
+
+``` {r}
+y <- seq(-10, 10, length.out = 100)
+
+plot(y, sc(pop, y, excess_kurtosis), type="l", lwd = 2,
+     main="Sensitivity Curve for the Excess Kurtosis",
+     ylab="Sensitivity"
+     )
+```
+
+**Good Property** 
+A good property of the excess kurtosis attribute is that it is location invariant. Since this attribute measures the instances of outliers in a distribution, it would not be ideal for its value to change based on the location of the mean.
+
+**Bad Property** 
+The bad property of the excess kurtosis attribute is that its sensitivity curve is unbounded for this range (between -10 to 10). Specifically, values of a magnitude above 5 have a greater affect on the excess kurtosis attribute. 

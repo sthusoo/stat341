@@ -1,0 +1,68 @@
+---
+title: "Assignment 1 Question 1"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## b. Investigate if $\alpha \left ( \mathcal P  \right )$ is scale invariant, scale equivariant, or neither.
+
+$$
+  \alpha \left ( \mathcal P  \right ) = \frac{\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{4}}{ \sigma ^{4}} - 3
+$$
+
+For $m > 0$, attribute $\alpha \left ( \mathcal P  \right )$  is scale invariant if 
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = \alpha \left ( y_{1}, ... , y_{N} \right )
+$$
+
+and is scale equivariant if
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = m \alpha \left ( y_{1}, ... , y_{N} \right )
+$$
+
+To begin,
+
+$$
+  y_u^{'} = my_u
+$$
+
+and 
+$$
+  \bar{y}^{'} = m\bar{y}
+$$
+
+Thus,
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = \frac{\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( my_{u} - m\bar{y} \right )^{4}}{ [\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( my_{u} - m\bar{y} \right )^{2}]^{2}} - 3
+$$
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = \frac{\frac{m^4}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{4}}{ [\frac{m^2}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{2}]^{2}} - 3
+$$
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = \frac{m^4\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{4}}{ m^4[\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{2}]^{2}} - 3
+$$
+
+$$
+  \alpha \left ( y_{1} + b, ... , y_{N} + b \right ) = \frac{\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{4}}{ [\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{2}]^{2}} - 3
+$$
+
+
+$$
+  \alpha \left ( y_{1} + b, ... , y_{N} + b \right ) = \frac{\frac{1}{N}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \bar{y} \right )^{4}}{ \sigma ^{4} } - 3
+$$
+
+$$
+  \alpha \left ( my_{1}, ... , my_{N} \right ) = \alpha \left ( y_{1}, ... , y_{N} \right )
+$$
+
+Therefore, the excess kurtosis attribute is scale invariant.

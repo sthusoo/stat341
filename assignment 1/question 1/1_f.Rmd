@@ -1,0 +1,31 @@
+---
+title: "Assignment 1 Question 1"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## f. [2 marks] Write the equation for the sensitivity curve of $\alpha \left ( \mathcal P  \right )$, given a population ${y_1,y_2,…,y_{N - 1}}$.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The sensitivity curve of an attribute is 
+
+$$
+  SC \left (y \right) = N[\alpha(\mathcal P^*) - \alpha(\mathcal P)]
+$$
+
+Then, for the excess kurtosis attribute, the sensitivity curve can be defined as 
+
+$$
+  SC \left ( y \right ) = N \left[ \left(\frac{\frac{1}{N}\sum_{u\epsilon \mathcal P^{*}}^{}\left ( y_{u} - \overline{y_N} \right )^{4}}{ \left[\frac{1}{N}\sum_{u\epsilon \mathcal P^*}^{}\left ( y_{u} - \overline{y_N} \right )^{2} \right]^{2}} - 3 \right) -
+\left(\frac{\frac{1}{N-1}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \overline{y_{N-1}} \right )^{4}}{ \left[\frac{1}{N-1}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \overline{y_{N-1}} \right )^{2} \right]^{2}} - 3 \right)
+  \right]
+$$
+
+$$
+  SC \left ( y \right ) = N \left[ \left(\frac{\frac{1}{N}\sum_{u\epsilon \mathcal P^{*}}^{}\left ( y_{u} - \overline{y_N} \right )^{4}}{ \left[\frac{1}{N}\sum_{u\epsilon \mathcal P^*}^{}\left ( y_{u} - \overline{y_N} \right )^{2} \right]^{2}} \right) -
+\left(\frac{\frac{1}{N-1}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \overline{y_{N-1}} \right )^{4}}{ \left[\frac{1}{N-1}\sum_{u\epsilon \mathcal P}^{}\left ( y_{u} - \overline{y_{N-1}} \right )^{2} \right]^{2}} \right)
+  \right]
+$$

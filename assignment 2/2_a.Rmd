@@ -1,0 +1,48 @@
+---
+title: "Assignment 2 Question 2"
+output: pdf_document
+author: Sheen Thusoo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part a)
+
+$$
+L(\boldsymbol\theta;y_1,...,y_n) = f_{\boldsymbol\theta}(y_1)\times...\times f_{\boldsymbol\theta}(y_n)
+$$
+
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \log\big(L(\boldsymbol\theta;y_1,...,y_n)\big)
+$$
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \log(f_{\boldsymbol\theta}(y_1)\times...\times f_{\boldsymbol\theta}(y_n))
+$$
+
+
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \log(f_{\boldsymbol\theta}(y_1)) + ... + log(f_{\boldsymbol\theta}(y_n))
+$$
+
+
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \sum_{i \in P} \log(f_{\boldsymbol\theta}(y_i))
+$$
+
+$$
+f(y) = \frac{\beta^\alpha y^{\alpha-1}}{\Gamma(\alpha)}\exp(-y\beta)
+$$
+
+
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \sum_{i \in P} \log \left( \frac{\beta^\alpha y_i^{\alpha-1}}{\Gamma(\alpha)}\exp(-y_i\beta) \right)
+$$
+
+Therefore the log-likelihood function of the parameter vector $\theta = (\alpha, \beta)$ is,
+
+$$
+\ell(\boldsymbol\theta;y_1,...,y_n) = \sum_{i \in P} \alpha \log(\beta) + (\alpha-1) \log(y_i) - \log(\Gamma(\alpha)) - y_i\beta
+$$
+

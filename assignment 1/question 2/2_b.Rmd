@@ -1,0 +1,14 @@
+---
+title: "Assignment 1 Question 2"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## b. Using R, calculate the number of each iris species in the data. For presentation quality, consider using the kable command.
+
+```{r}
+library(knitr)
+iris_data <- read.csv("Iris.csv")
+num_species <- data.frame(table(iris_data$Species))
+kable(num_species, col.names = c("Species", "Count"), caption = "Number of Each Iris Species")
+```

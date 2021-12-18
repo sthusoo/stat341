@@ -1,0 +1,53 @@
+---
+title: "Assignment 2 Question 2"
+output: pdf_document
+author: Sheen Thusoo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part c)
+
+``` {r}
+data <- read.csv("EconomicMobility.csv")
+```
+
+```{r}
+objective.fn <- function(P) {
+  function(alpha, beta) {
+    loglikelihood <- 0
+    for (y in P) {
+      loglikelihood <- loglikelihood + alpha*log(beta) + 
+        (alpha -1)*log(y) - log(gamma(alpha)) - y*beta
+    }
+    return(loglikelihood)
+  }
+}
+```
+
+
+```{r}
+alpha = beta = seq(1, 99)
+objective <- objective.fn(data$Commute)
+# This is the key computation; there are many ways to achieve this.
+z = outer(alpha, beta, objective)  # Outer takes advantage of the fact that
+                                 # objective.fn is vectorized simultaneously
+
+par(mfrow = c(1, 2), mar = c(3,3,1,1), mgp = c(3, 0.5, 0))
+persp(alpha, beta, z,                 # x-ticks, y-ticks, "height" matrix.
+      theta = -30, phi = 10,     # Viewpoint rotation (spherical coordinates).
+      col='yellow', expand=1,
+      ticktype = 'detailed')
+
+# For an interactive visualization, substitute persp for rgl::persp3d.
+
+image(alpha, beta, z,                 # Matrix as heatmap.
+      col = heat.colors(100),    # Palette with 100 levels; visually continuous.
+      useRaster = TRUE,          # Less accurate image, but faster.
+      ann = FALSE)
+mtext(text = "alpha", side = 1, line = 1.5) # Suppress default axis labels, and
+mtext(text = "beta", side = 2, line = 1.5) # draw them closer to the axis.
+contour(alpha, beta, z, add = TRUE)   # Add contours.
+```

@@ -1,0 +1,72 @@
+---
+title: "Question 1 e)"
+author: "Sheen Thusoo"
+date: "10/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r}
+data <- read.csv("Infectious.csv")
+```
+
+``` {r, fig.height=6}
+library(ggplot2)
+library("gridExtra")
+
+y <- data$Deceased.Prop
+fitted.alphas <- c( 1.55e+36, -9.19e+35, 1.706)
+fitted.betas <- c(6.44e+35, 4.11e+34, 0.191)
+
+x <- data$Infected
+
+yhat1 <- 1 - 1/(fitted.alphas[1] + fitted.betas[1] * x)
+yhat2 <- 1 - 1/(fitted.alphas[2] + fitted.betas[2] * x)
+yhat3 <- 1 - 1/(fitted.alphas[3] + fitted.betas[3] * x)
+
+# Scatterplot
+g1 <- ggplot(data) + 
+  geom_point(
+    aes(x = yhat1, 
+        y = y,
+        alpha = 0.5)
+  ) +
+  labs(
+       y="Variates y_u", 
+       x="Fitted Variates yhat_u", 
+       title="Relationship of Observed versus Fitted Variates", 
+)
+g2 <- ggplot(data) + 
+   geom_point(
+    aes(x = yhat2, 
+        y = y,
+        alpha = 0.5)
+  ) +
+  labs(
+       y="Variates y_u", 
+       x="Fitted Variates yhat_u", 
+       title="Relationship of Observed versus Fitted Variates", 
+)
+g3 <- ggplot(data) +
+  geom_point(
+    aes(x = yhat3, 
+        y = y,
+        alpha = 0.5)
+  ) +
+  labs(
+       y="Variates y_u", 
+       x="Fitted Variates yhat_u", 
+       title="Relationship of Observed versus Fitted Variates", 
+)
+
+grid.arrange(g1, g2, g3, nrow = 3)
+```
+
+
+**What do you learn from these plots?**  
+From the first 2 plots, it is clear that these initial values for $\theta$ are not good parameter estimates. This is because $\widehat y_u$ remains 1.0 whereas $y_u$ varies from 0.4 to 1.0; this reflects that the fitted and observed variates are not similar. The third plot shows that these initial values, that being (1.1, 0.3) are the superior parameter estimates. This is because there is a clear linear relationship between the fitted and observed variates; this reflects that they are very similar in value as the line is almost similar to $y=x$. 
+

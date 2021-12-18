@@ -1,0 +1,44 @@
+---
+title: "Assignment 1 Question 2"
+author: "Sheen Thusoo"
+output: pdf_document
+---
+
+## e. Using R, add a new variable to the data called PetalRatio = PetalWidth/PetalLength and then determine
+
+```{r}
+iris_data <- read.csv("Iris.csv")
+iris_data <- transform(iris_data, PetalRatio = PetalWidth / PetalLength)
+```
+
+## i. the iris species with the largest and the smallest values of PetalRatio.
+
+```{r}
+min_ratio_index <- which.min(iris_data$PetalRatio)
+min_ratio.species <- iris_data[min_ratio_index, "Species"]
+
+max_ratio <- max(iris_data$PetalRatio)
+max_ratio.species <- iris_data[iris_data$PetalRatio == max_ratio, "Species"]
+
+message("The species with the smallest PetalRatio is ", min_ratio.species)
+message("The species with the largest PetalRatio is ", max_ratio.species)
+```
+
+
+## ii. within each iris species, the proportion of samples with PetalRatio > 0.3.
+```{r}
+setosa_subset <- sum(iris_data$Species == "Iris-setosa" & iris_data$PetalRatio > 0.3)
+total_setosa <- sum(iris_data$Species == "Iris-setosa")
+setosa_ratio <- setosa_subset/total_setosa
+message("Iris-setosa: The proportion of samples with PetalRatio > 0.3 is ", setosa_ratio)
+
+versicolor_subset <- sum(iris_data$Species == "Iris-versicolor" & iris_data$PetalRatio > 0.3)
+total_versicolor <- sum(iris_data$Species == "Iris-versicolor")
+versicolor_ratio <- versicolor_subset/total_versicolor
+message("Iris-versicolor: The proportion of samples with PetalRatio > 0.3 is ", versicolor_ratio)
+
+virginica_subset <- sum(iris_data$Species == "Iris-virginica" & iris_data$PetalRatio > 0.3)
+total_virginica <- sum(iris_data$Species == "Iris-virginica")
+virginica_ratio <- virginica_subset/total_virginica
+message("Iris-virginica: The proportion of samples with PetalRatio > 0.3 is ", virginica_ratio)
+```
